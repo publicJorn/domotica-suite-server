@@ -1,0 +1,15 @@
+<html>
+	<script src="node_modules/socket.io-client/dist/socket.io.js"></script>
+	<script>
+		const url = 'http://localhost:3003/sensor'
+		const socket = io.connect(url, { forceNew: true })
+
+		socket.on('connect', () => console.log('connect event'))
+		socket.on('connected', () => console.log('connected event'))
+		socket.on('disconnect', () => console.log('disconnected'))
+
+		setTimeout(() => {
+			socket.disconnect()
+		}, 1000)
+	</script>
+</html>

@@ -1,0 +1,28 @@
+{
+  "name": "domotica-server",
+  "version": "0.1.0",
+  "description": "Receives and stores sensor data and provides an api for monitoring this data.",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "cross-env NODE_ENV=production && node index.js",
+    "test": "jest --config ./__tests__/jest.json"
+  },
+  "keywords": [
+    "domotica",
+    "arduino",
+    "api"
+  ],
+  "repository": "git:TODO",
+  "author": "Jorn Luiten (https://github.com/publicJorn)",
+  "license": "ISC",
+  "dependencies": {
+    "cross-env": "^4.0.0",
+    "express": "^4.15.2",
+    "socket.io": "^1.7.3",
+    "winston": "^2.3.1"
+  },
+  "devDependencies": {
+    "jest": "^19.0.2",
+    "nodemon": "^1.11.0"
+  }
+}
