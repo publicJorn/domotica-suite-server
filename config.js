@@ -6,7 +6,5 @@ const url = `${protocol}://${domain}:${port}`
 module.exports = {
   domain,
 	port,
-	url,
-	sensorUrl: `${url}/sensor`,
-	monitorUrl: `${url}/monitor`,
+	url
 }

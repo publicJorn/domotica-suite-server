@@ -2,8 +2,13 @@
 	"testMatch": [
 		"**/__tests__/**/*.js"
 	],
-	"testPathIgnorePatterns": [
+
+  "testPathIgnorePatterns": [
 		"node_modules",
 		"_tests-todo"
-	]
+	],
+
+  "modulePaths": [
+    "<rootDir>/"
+  ]
 }

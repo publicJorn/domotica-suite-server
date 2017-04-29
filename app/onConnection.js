@@ -1,6 +1,8 @@
-const logger = require('../utils/loggerFactory')()
+const logger = require('./utils/loggerFactory')()
 
-module.exports = (client) => {
-  logger.info(`${client.id} connected`)
-  client.emit('request-identity', { status: 'ok' })
+module.exports = (socket) => {
+  logger.info(`${socket.id} connected`)
+  logger.info(Object.keys(socket))
+
+  socket.emit('request-identity', { status: 'ok' })
 }

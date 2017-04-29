@@ -1,7 +1,7 @@
 <html>
-	<script src="node_modules/socket.io-client/dist/socket.io.js"></script>
+	<script src="../../node_modules/socket.io-client/dist/socket.io.js"></script>
 	<script>
-		const url = 'http://localhost:3003/sensor'
+		const url = 'http://localhost:3003'
 		const socket = io.connect(url, { forceNew: true })
 
 		socket.on('connect', () => console.log('connect event'))
@@ -10,6 +10,6 @@
 
 		setTimeout(() => {
 			socket.disconnect()
-		}, 1000)
+		}, 2000)
 	</script>
 </html>

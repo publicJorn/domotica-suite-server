@@ -2,9 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const winston = require('winston');
 
-
 // When initially required, first check if the log dir actually exists. Create if not so.
-const logDir = path.resolve(__dirname, '../', 'logs');
+const logDir = path.resolve(__dirname, '../../', 'logs');
 try {
   const logDirStats = fs.statSync(logDir);
 
@@ -26,7 +25,7 @@ const fileHandle = 'file-all';
  * @export default
  */
 function loggerFactory () {
-  console.info('Create new logger instance')
+  console.log('LOGGER FACTORY')
   if (winston.default.transports[fileHandle]) {
     return winston;
   }
