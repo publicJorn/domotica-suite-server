@@ -25,7 +25,6 @@ const fileHandle = 'file-all';
  * @export default
  */
 function loggerFactory () {
-  console.log('LOGGER FACTORY')
   if (winston.default.transports[fileHandle]) {
     return winston;
   }

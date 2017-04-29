@@ -5,7 +5,6 @@ const mockWarn = jest.fn()
 const mockError = jest.fn()
 
 module.exports = () => {
-  console.log('CREATING MOCK LOGGER')
   return {
     log: mockLog,
     debug: mockDebug,
