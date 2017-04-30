@@ -1,14 +1,21 @@
 const MockServer = require('mock-socket').Server
-const mockIO = require('mock-socket').SocketIO
+const socketIO = require('mock-socket').SocketIO
 
-module.exports = (url, fn) => {
+module.exports = (url, done) => {
   const mockServer = new MockServer(url)
-  mockServer.on('connect', fn)
-
-  const mockClient = mockIO(url, {
+  const mockClient = socketIO(url, {
     forceNew: true,
     reconnection: false,
   })
 
-  return { mockClient, mockServer }
+  const catchy = (assertion) => {
+    try {
+      assertion()
+      mockServer.stop(done)
+    } catch (e) {
+      mockServer.stop(done.fail.bind(null, e))
+    }
+  }
+
+  return { mockClient, mockServer, catchy }
 }

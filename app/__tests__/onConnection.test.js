@@ -7,14 +7,12 @@ const onConnection = require('app/onConnection')
 
 it('Should add a log entry on a new connection', (done) => {
   const loggerSpy = jest.spyOn(logger, 'info')
-  const { mockClient, mockServer } = mockIO(cfg.url, onConnection)
+  const { mockClient, mockServer, catchy } = mockIO(cfg.url, done)
 
-  mockClient.on('connect', () => {
-    try {
-      expect(loggerSpy).toHaveBeenCalled()
-      mockServer.stop(done)
-    } catch (e) {
-      mockServer.stop(done.fail.bind(null, e))
-    }
+  const assert = () => catchy(() => {
+    expect(loggerSpy).toHaveBeenCalled()
   })
+
+  mockServer.on('connect', onConnection)
+  mockClient.on('connect', assert)
 })
