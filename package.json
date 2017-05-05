@@ -12,7 +12,6 @@
   "license": "ISC",
   "scripts": {
     "check": "check-node-version --package",
-    "go"   : "npm run check && node test.js",
     "dev"  : "npm run check && nodemon index.js",
     "start": "npm run check && cross-env NODE_ENV=production && node index.js",
     "test" : "npm run check && jest --config ./jest.json"
