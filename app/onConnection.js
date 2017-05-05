@@ -1,8 +1,9 @@
 const logger = require('./utils/loggerFactory')()
+const identify = require('./identify')
 
 module.exports = (socket) => {
   logger.info(`${socket.id} connected`)
-  logger.info(Object.keys(socket))
+  console.log(Object.keys(socket))
 
-  socket.emit('request-identity', { status: 'ok' })
+  identify(socket)
 }
