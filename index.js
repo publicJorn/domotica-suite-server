@@ -2,7 +2,7 @@
 const SocketServer = require('socket.io')
 const cfg = require('./config')
 // const httpHandler = require('./app/static/httpHandler')
-const onConnection = require('./app/onConnection')
+const setListeners = require('./app/setListeners')
 
 // TODO: static server; For admin/monitor interface
 // const app = http.createServer(httpHandler)
@@ -10,6 +10,6 @@ const onConnection = require('./app/onConnection')
 
 const io = new SocketServer(cfg.port)
 
-io.on('connect', onConnection)
+io.on('connect', setListeners)
 
 console.log('\n🌐  Sockets open and ready for use ::')
