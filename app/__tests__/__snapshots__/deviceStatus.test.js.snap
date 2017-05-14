@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Device statuses should be as expected 1`] = `
+Object {
+  "ERROR": "some generic error",
+  "IDENTITY_ERROR": "incorrect identity information",
+  "MONITOR_OK": "sensor identity ok",
+  "SENSOR_ALERT": "sensor triggered",
+  "SENSOR_OK": "default status ok",
+  "SENSOR_PENDING": "pending identity",
+}
+`;

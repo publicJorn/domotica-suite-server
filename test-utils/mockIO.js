@@ -1,9 +1,15 @@
+/**
+ * See package.json
+ * Currently using my own fork of `mock-socket` which implements `socket.to`.
+ * If this never gets pulled into original project, I could probably rewrite
+ * `socket.to().emit()` -> `socket.broadcast.to().emit()`.
+ */
 const MockServer = require('mock-socket').Server
-const socketIO = require('mock-socket').SocketIO
+const createMockSocket = require('mock-socket').SocketIO
 
 module.exports = (url, done1) => {
   const mockServer = new MockServer(url)
-  const mockClient = socketIO(url, {
+  const mockSocket = createMockSocket(url, {
     forceNew: true,
     reconnection: false,
   })
@@ -34,5 +40,8 @@ module.exports = (url, done1) => {
     }
   }
 
-  return { mockClient, mockServer, catchy }
+  // mockSocket - The socket object on the server side
+  // mockServer - The io/server object
+  // catchy     - wrap assertions in this function for proper handling
+  return { mockSocket, mockServer, catchy }
 }

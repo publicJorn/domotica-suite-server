@@ -1,8 +1,9 @@
 jest.mock('../utils/loggerFactory')
 
-const mockIO = require('test-utils/mockIO')
 const cfg = require('config')
+const mockIO = require('test-utils/mockIO')
 const logger = require('app/utils/loggerFactory')()
+const deviceStatus = require('app/deviceStatus')
 const setListeners = require('app/setListeners')
 
 jest.mock('app/checkIdentity', () => {
@@ -10,58 +11,96 @@ jest.mock('app/checkIdentity', () => {
 })
 
 describe('When a new connection is made', () => {
-  test('It should add a log entry', (done) => {
+  it('Should add a log entry', (done) => {
+    const { mockSocket, catchy } = mockIO(cfg.url, done)
+    // const client = ioClient.connect(cfg.url, clientOpts)
     const loggerSpy = jest.spyOn(logger, 'info')
-    const { mockClient, mockServer, catchy } = mockIO(cfg.url, done)
 
     const assert = () => catchy(() => {
       expect(loggerSpy).toHaveBeenCalled()
     })
 
-    setListeners(mockServer)
-    mockClient.on('connect', assert)
+    setListeners(mockSocket)
+    mockSocket.on('connect', assert)
   })
 
-  test('It should listen to the `identify` event', (done) => {
-    const { mockClient, mockServer, catchy } = mockIO(cfg.url, done)
+  it('Should listen to the `identify` event', (done) => {
+    const { mockSocket, catchy } = mockIO(cfg.url, done)
 
     const assert = () => catchy(() => {
-      expect(mockServer.listeners.identify).toBeDefined()
+      expect(mockSocket.listeners.identify).toBeDefined()
     })
 
-    setListeners(mockServer)
-    mockClient.on('connect', assert)
+    setListeners(mockSocket)
+    mockSocket.on('connect', assert)
   })
 })
 
 describe('When succesfully identified', () => {
-  test('A connected sensor should be listened to for expected events', (done) => {
-    const { mockClient, mockServer, catchy } = mockIO(cfg.url, done)
+  describe('A connected sensor', () => {
+    it('Should be listened to for expected events', (done) => {
+      const { mockSocket, mockServer, catchy } = mockIO(cfg.url, done)
 
-    const assert = () => catchy(() => {
-      expect(mockServer.listeners.alert).toBeDefined()
+      const assert = () => catchy(() => {
+        expect(mockSocket.listeners.alert).toBeDefined()
+      })
+
+      setListeners(mockSocket)
+
+      mockSocket.on('connect', () => {
+        mockServer.emit('identify', {
+          type: 'sensor',
+          status: deviceStatus.SENSOR_OK
+        })
+        setTimeout(assert, 50)
+      })
     })
 
-    setListeners(mockServer)
-    mockClient.on('connect', () => {
-      mockClient.emit('identify', { type: 'sensor', isKnown: true })
-      setTimeout(assert, 50)
+    it('Should emit `sensorlist` to monitors', (done) => {
+      const { mockSocket, mockServer, catchy } = mockIO(cfg.url, done)
+      const toSpy = jest.spyOn(mockSocket, 'to')
+      const emitSpy = jest.spyOn(mockServer, 'emit')
+
+      const assert = () => catchy(() => {
+        expect(toSpy).toHaveBeenCalledWith('monitors')
+        expect(emitSpy).toHaveBeenCalledWith(
+          'sensorlist',
+          expect.any(Array),
+          expect.anything() // Used by mock-socket internally
+        )
+      })
+
+      setListeners(mockSocket)
+
+      mockSocket.on('connect', () => {
+        mockServer.emit('identify', {
+          type: 'sensor',
+          status: deviceStatus.SENSOR_OK
+        })
+        setTimeout(assert, 50)
+      })
     })
   })
 
-  test('A connected monitor should be listened to for expected events', (done) => {
-    const { mockClient, mockServer, catchy } = mockIO(cfg.url, done)
+  describe('A connected monitor', () => {
+    it('Should be listened to for expected events', (done) => {
+      const { mockSocket, mockServer, catchy } = mockIO(cfg.url, done)
 
-    const assert = () => catchy(() => {
-      expect(Object.keys(mockServer.listeners)).toEqual(
-        expect.arrayContaining(['saveSensorData', 'affirm'])
-      )
-    })
+      const assert = () => catchy(() => {
+        expect(Object.keys(mockSocket.listeners)).toEqual(
+          expect.arrayContaining(['saveSensorData', 'affirm'])
+        )
+      })
 
-    setListeners(mockServer)
-    mockClient.on('connect', () => {
-      mockClient.emit('identify', { type: 'monitor', isKnown: true })
-      setTimeout(assert, 50)
+      setListeners(mockSocket)
+
+      mockSocket.on('connect', () => {
+        mockServer.emit('identify', {
+          type: 'monitor',
+          status: deviceStatus.MONITOR_OK
+        })
+        setTimeout(assert, 50)
+      })
     })
   })
 })
