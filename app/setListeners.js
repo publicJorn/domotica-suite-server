@@ -8,11 +8,11 @@ const sockets = new ConnectedClients()
 module.exports = (socket) => {
   logger.info(`${socket.id} connected`)
 
-  socket.on('identify', async (identity) => {
+  socket.on('identify', async (identity, cbIdentify) => {
     const device = await checkIdentity(socket, identity)
 
     if (device.status === deviceStatus.IDENTITY_ERROR) {
-      socket.emit('error', { device }) // Or in return fn?
+      if (cbIdentify) cbIdentify({ error: deviceStatus.IDENTITY_ERROR, device })
       return
     }
 
@@ -35,5 +35,7 @@ module.exports = (socket) => {
         socket.join('monitors')
         break
     }
+
+    if (cbIdentify) cbIdentify({ error: '', device })
   })
 }
