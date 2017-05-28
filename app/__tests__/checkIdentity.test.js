@@ -21,19 +21,35 @@ describe('When a sensor identity is checked', () => {
     const identity = { type: 'sensor', sensorId: 'unknown' }
     const device = checkIdentity(identity)
 
-    it('Should add sensor to DB and set state to `pending`', () => {
+    it('Should add sensor to DB and set state to "pending"', () => {
       expect(dbAddSpy).toBeCalledWith(identity)
     })
 
-    it('Should return `pending identity`', () => {
+    it('Should return an object containing "pending" status', () => {
       expect(device).toEqual(expect.objectContaining({
         status: deviceStatus.SENSOR_PENDING,
       }))
     })
   })
+
+  describe('And sensor is known', () => {
+    const identity = { type: 'sensor', sensorId: 'known' }
+    const device = checkIdentity(identity)
+
+    it('Should return an object containing "identified" status', () => {
+      expect(device).toEqual(expect.objectContaining({
+        status: deviceStatus.SENSOR_OK,
+      }))
+    })
+  })
 })
 
-describe('When any other identity request is made', () => {
+// Should accept identity information from monitor
+// Should log any monitor identity
+// Should return `not authorised` if credentials are incorrect
+// Should return `sensorlist` if credentials are correct
+
+describe('When an unknonwn identity request is made', () => {
   const identity = { erroneous: 'identity' }
 
   it('Should log a warning with meta data', () => {
@@ -50,20 +66,3 @@ describe('When any other identity request is made', () => {
     }))
   })
 })
-
-
-// Should accept identity information from sensor
-//
-// When sensor is not known
-//   Should return `pending identity`
-//   Should add sensor to DB and set state to `pending`
-//   Should emit `sensorlist` to monitors
-// When sensor is known
-//   Should return `identified` if
-//   Should set sensor state in DB to `identified`
-//   Should emit `sensorlist` to monitors
-
-// Should accept identity information from monitor
-// Should log any monitor identity
-// Should return `not authorised` if credentials are incorrect
-// Should return `sensorlist` if credentials are correct
