@@ -8,5 +8,6 @@ Object {
   "SENSOR_ALERT": "sensor triggered",
   "SENSOR_OK": "default status ok",
   "SENSOR_PENDING": "pending identity",
+  "SENSOR_UNCONNECTED": "registered sensor is not connected",
 }
 `;

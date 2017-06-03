@@ -2,6 +2,7 @@ const logger = require('./utils/loggerFactory')()
 const deviceStatus = require('./deviceStatus')
 const ConnectedClients = require('./ConnectedClients.class')
 const checkIdentity = require('./checkIdentity')
+const sensorTools = require('./sensorTools')
 
 const sockets = new ConnectedClients()
 
@@ -13,7 +14,8 @@ module.exports = (socket) => {
 
     if (device.status === deviceStatus.IDENTITY_ERROR) {
       if (cbIdentify) cbIdentify({ error: deviceStatus.IDENTITY_ERROR, device })
-      return
+      socket.disconnect()
+      return 'Error'
     }
 
     sockets.add(socket, device) // TODO: Check if we can we use `namespace.connected` or `namespace.clients` instead?
@@ -25,10 +27,18 @@ module.exports = (socket) => {
           socket.on('alert', (...args) => console.log('alert', args))
         }
 
-        socket.to('monitors').emit('sensorlist', ['sensors'])
+        socket.on('disconnect', () => {
+          sensorTools.handleDisconnect(device)
+          socket.to('monitors').emit('sensorlist', ['todo', 'sensors'])
+        })
+        socket.to('monitors').emit('sensorlist', ['todo', 'sensors'])
         break
 
       case 'monitor':
+        // console.log('\n\n --------- \n\n')
+        // console.log(Object.keys(socket))
+        // console.log('\n\n ========= \n\n')
+
         // TODO: if credentials ok
         socket.on('saveSensorData', (...args) => console.log('saveSensorData', args))
         socket.on('affirm', (...args) => console.log('affirm', args))

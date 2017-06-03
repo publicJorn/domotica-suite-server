@@ -7,4 +7,7 @@ module.exports = {
 
   add: (identity) =>
     Object.assign(identity, { status: deviceStatus.SENSOR_PENDING }),
+
+  setStatus: (device, newStatus) =>
+    Object.assign(device, { status: newStatus }),
 }

@@ -1,14 +1,17 @@
-jest.mock('../utils/loggerFactory')
-
 const cfg = require('config')
 const mockIO = require('test-utils/mockIO')
 const logger = require('app/utils/loggerFactory')()
+const db = require('app/db')
 const deviceStatus = require('app/deviceStatus')
 const setListeners = require('app/setListeners')
 
+jest.mock('../utils/loggerFactory')
+jest.mock('app/db')
 jest.mock('app/checkIdentity', () => {
   return jest.fn((socket, identity) => identity)
 })
+
+const dbStatusSpy = jest.spyOn(db, 'setStatus')
 
 describe('When a new connection is made', () => {
   it('Should add a log entry', (done) => {
@@ -101,7 +104,7 @@ describe('When succesfully identified', () => {
       })
     })
 
-    it('Should emit `sensorlist` to monitors', (done) => {
+    it('Should emit "sensorlist" to monitors', (done) => {
       const { mockSocket, mockServer, catchy } = mockIO(cfg.url, done)
       const toSpy = jest.spyOn(mockSocket, 'to')
       const emitSpy = jest.spyOn(mockServer, 'emit')
@@ -149,3 +152,55 @@ describe('When succesfully identified', () => {
     })
   })
 })
+
+// TODO: I think there's a bug in mock-socket > SocketIO.prototype.close
+// TODO: the first dispatched event gets stuck somewhere. But even when commenting out the first,
+// TODO: 'disconnect' event doesn't fire on mockSocket, so this case is not testable.
+// describe('When a connection to sensor is lost', () => {
+  // it('Should update sensor status in database if sensor is identified', (done) => {
+  //   console.log('=> my test')
+  //   const { mockSocket, mockServer, catchy } = mockIO(cfg.url, done)
+  //
+  //   const assert = () => catchy(() => {
+  //     expect(dbStatusSpy).toBeCalledWith(
+  //       expect.objectContaining({ type: expect.any(String) }),
+  //       deviceStatus.SENSOR_UNCONNECTED
+  //     )
+  //   })
+  //
+  //   setListeners(mockSocket)
+  //
+  //   mockSocket.on('connect', () => {
+  //     console.log('-> connect')
+  //     mockServer.emit('identify', {
+  //       type: 'sensor',
+  //       status: deviceStatus.SENSOR_OK
+  //     })
+  //
+  //     setTimeout(() => {
+  //       console.log('-> disconnect')
+  //       mockSocket.disconnect()
+  //       console.log('-> disconnect 2')
+  //       assert()
+  //     }, 50)
+  //   })
+  // })
+
+  // it('Should emit "sensorlist" to monitors', (done) => {
+  //   const { mockSocket, mockServer, catchy } = mockIO(cfg.url)
+  //   const toSpy = jest.spyOn(mockSocket, 'to')
+  //   const emitSpy = jest.spyOn(mockServer, 'emit')
+  //
+  //   const assert = () => catchy(() => {
+  //     expect(toSpy).toHaveBeenCalledWith('monitors')
+  //     expect(emitSpy).toHaveBeenCalledWith(
+  //       'sensorlist',
+  //       expect.any(Array),
+  //       expect.anything() // Used by mock-socket internally
+  //     )
+  //   })
+  //
+  //   mockSocket.disconnect()
+  //
+  // })
+// })
