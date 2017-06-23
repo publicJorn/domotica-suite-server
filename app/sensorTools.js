@@ -1,5 +1,23 @@
+const logger = require('./utils/loggerFactory')()
 const db = require('./db')
 const deviceStatus = require('./deviceStatus')
+
+/**
+ * Identification
+ * @param identity
+ * @returns {*}
+ */
+function checkSensor (identity) {
+  logger.debug('Sensor identity check', identity)
+
+  let sensorData = db.find(identity)
+
+  if (!sensorData) {
+    sensorData = db.add(identity)
+  }
+
+  return sensorData
+}
 
 /**
  * Only set SENSOR_UNCONNECTED if it is registered
@@ -12,5 +30,6 @@ function handleDisconnect (device) {
 }
 
 module.exports = {
+  checkSensor,
   handleDisconnect
 }

@@ -70,7 +70,7 @@ describe('When succesfully identified', () => {
     const assert = () => catchy(() => {
       expect(cb).toBeCalledWith(expect.objectContaining({
         error: '',
-        device: expect.objectContaining({ status: deviceStatus.SENSOR_PENDING }),
+        client: expect.objectContaining({ status: deviceStatus.SENSOR_PENDING }),
       }))
     })
 

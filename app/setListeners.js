@@ -10,25 +10,25 @@ module.exports = (socket) => {
   logger.info(`${socket.id} connected`)
 
   socket.on('identify', async (identity, cbIdentify) => {
-    const device = await checkIdentity(socket, identity)
+    const client = await checkIdentity(socket, identity)
 
-    if (device.status === deviceStatus.IDENTITY_ERROR) {
-      if (cbIdentify) cbIdentify({ error: deviceStatus.IDENTITY_ERROR, device })
+    if (client.status === deviceStatus.IDENTITY_ERROR) {
+      if (cbIdentify) cbIdentify({ error: deviceStatus.IDENTITY_ERROR, client })
       socket.disconnect()
       return 'Error'
     }
 
-    sockets.add(socket, device) // TODO: Check if we can we use `namespace.connected` or `namespace.clients` instead?
+    sockets.add(socket, client) // TODO: Check if we can we use `namespace.connected` or `namespace.clients` instead?
     socket.on('disconnect', () => sockets.remove(socket.id))
 
-    switch (device.type) {
+    switch (client.type) {
       case 'sensor':
-        if (device.status === deviceStatus.SENSOR_OK) {
+        if (client.status === deviceStatus.SENSOR_OK) {
           socket.on('alert', (...args) => console.log('alert', args))
         }
 
         socket.on('disconnect', () => {
-          sensorTools.handleDisconnect(device)
+          sensorTools.handleDisconnect(client)
           socket.to('monitors').emit('sensorlist', ['todo', 'sensors'])
         })
         socket.to('monitors').emit('sensorlist', ['todo', 'sensors'])
@@ -46,6 +46,6 @@ module.exports = (socket) => {
         break
     }
 
-    if (cbIdentify) cbIdentify({ error: '', device })
+    if (cbIdentify) cbIdentify({ error: '', client })
   })
 }

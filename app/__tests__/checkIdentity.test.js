@@ -44,10 +44,58 @@ describe('When a sensor identity is checked', () => {
   })
 })
 
-// Should accept identity information from monitor
-// Should log any monitor identity
-// Should return `not authorised` if credentials are incorrect
-// Should return `sensorlist` if credentials are correct
+describe('When a monitor identity is checked', () => {
+  describe('When identity info is incorrect', () => {
+    const identity = { type: 'monitor' }
+    const monitor = checkIdentity(identity)
+
+    it('Should log the monitor attempting to identify', () => {
+      expect(logDebugSpy).toBeCalledWith(expect.any(String), identity)
+    })
+
+    // Not a general error; Give 'em as few clues as possible!
+    it('Should return a login error', () => {
+      expect(monitor).toEqual(expect.objectContaining({
+        status: deviceStatus.MONITOR_LOGIN_ERROR,
+      }))
+    })
+  })
+
+  describe('And while testing credentials', () => {
+    describe('The name doesn\'t exist', () => {
+      it('Should return a login error', () => {
+        const identity = { type: 'monitor', credentials: { name: 'nok', pass: 'nok' } }
+        const monitor = checkIdentity(identity)
+
+        expect(monitor).toEqual(expect.objectContaining({
+          status: deviceStatus.MONITOR_LOGIN_ERROR,
+        }))
+      })
+    })
+
+    describe('The name exists, but pass is wrong', () => {
+      it('Should return a login error', () => {
+        const identity = { type: 'monitor', credentials: { name: 'ok', pass: 'nok' } }
+        const monitor = checkIdentity(identity)
+
+        expect(monitor).toEqual(expect.objectContaining({
+          status: deviceStatus.MONITOR_LOGIN_ERROR,
+        }))
+      })
+    })
+  })
+
+  describe('When credentials are correct', () => {
+    it('Should return an ok status', () => {
+      const identity = { type: 'monitor', credentials: { name: 'ok', pass: 'ok' } }
+      const monitor = checkIdentity(identity)
+
+      expect(monitor).toEqual(expect.objectContaining({
+        status: deviceStatus.MONITOR_OK,
+      }))
+    })
+  })
+})
 
 describe('When an unknonwn identity request is made', () => {
   const identity = { erroneous: 'identity' }

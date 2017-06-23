@@ -1,40 +1,28 @@
 const logger = require('./utils/loggerFactory')()
-const db = require('./db')
 const deviceStatus = require('./deviceStatus')
-
-const logMessages = {
-  sensorConnects: 'Sensor identity check',
-  badIdentity: 'Erroneous identity data',
-}
+const sensorTools = require('./sensorTools')
+const monitorTools = require('./monitorTools')
 
 module.exports = (identity) => {
   switch (identity.type) {
     case 'sensor':
-      return checkSensor(identity)
+      return sensorTools.checkSensor(identity)
+
+    case 'monitor':
+      return monitorTools.checkMonitor(identity)
 
     default:
       return handleError(identity)
   }
 }
 
-function checkSensor (identity) {
-  logger.debug(logMessages.sensorConnects, identity)
-
-  let sensorData = db.find(identity)
-
-  if (!sensorData) {
-    sensorData = db.add(identity)
-  }
-
-  return sensorData
-}
-
 function handleError (identity) {
+  const errorMsg = 'Erroneous identity data'
   const deviceData = Object.assign(identity, {
     status: deviceStatus.IDENTITY_ERROR,
-    error: logMessages.badIdentity,
+    error: errorMsg,
   })
 
-  logger.warn(logMessages.badIdentity, deviceData)
+  logger.warn(errorMsg, deviceData)
   return deviceData
 }
