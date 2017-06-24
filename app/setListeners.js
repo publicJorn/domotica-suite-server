@@ -39,7 +39,6 @@ module.exports = (socket) => {
         // console.log(Object.keys(socket))
         // console.log('\n\n ========= \n\n')
 
-        // TODO: if credentials ok
         socket.on('saveSensorData', (...args) => console.log('saveSensorData', args))
         socket.on('affirm', (...args) => console.log('affirm', args))
         socket.join('monitors')

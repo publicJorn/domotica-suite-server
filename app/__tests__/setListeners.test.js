@@ -11,7 +11,7 @@ jest.mock('app/checkIdentity', () => {
   return jest.fn((socket, identity) => identity)
 })
 
-const dbStatusSpy = jest.spyOn(db, 'setStatus')
+const dbSetStatusSpy = jest.spyOn(db, 'setSensorStatus')
 
 describe('When a new connection is made', () => {
   it('Should add a log entry', (done) => {
@@ -162,7 +162,7 @@ describe('When succesfully identified', () => {
   //   const { mockSocket, mockServer, catchy } = mockIO(cfg.url, done)
   //
   //   const assert = () => catchy(() => {
-  //     expect(dbStatusSpy).toBeCalledWith(
+  //     expect(dbSetStatusSpy).toBeCalledWith(
   //       expect.objectContaining({ type: expect.any(String) }),
   //       deviceStatus.SENSOR_UNCONNECTED
   //     )

@@ -10,10 +10,10 @@ const deviceStatus = require('./deviceStatus')
 function checkSensor (identity) {
   logger.debug('Sensor identity check', identity)
 
-  let sensorData = db.find(identity)
+  let sensorData = db.findSensor(identity)
 
   if (!sensorData) {
-    sensorData = db.add(identity)
+    sensorData = db.addSensor(identity)
   }
 
   return sensorData
@@ -25,7 +25,7 @@ function checkSensor (identity) {
  */
 function handleDisconnect (device) {
   if (device.status !== deviceStatus.SENSOR_PENDING) {
-    db.setStatus(device, deviceStatus.SENSOR_UNCONNECTED)
+    db.setSensorStatus(device, deviceStatus.SENSOR_UNCONNECTED)
   }
 }
 

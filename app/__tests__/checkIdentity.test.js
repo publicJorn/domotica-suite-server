@@ -8,7 +8,7 @@ jest.mock('app/db')
 
 const logDebugSpy = jest.spyOn(logger, 'debug')
 const logWarnSpy = jest.spyOn(logger, 'warn')
-const dbAddSpy = jest.spyOn(db, 'add')
+const dbAddSpy = jest.spyOn(db, 'addSensor')
 
 describe('When a sensor identity is checked', () => {
   it('Should log the sensor trying to identify', () => {
