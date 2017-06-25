@@ -39,53 +39,53 @@ describe('When a new connection is made', () => {
   })
 })
 
-describe('When identification is unsuccessful', () => {
-  it('Should run the callback function with an error message', (done) => {
-    const { mockSocket, mockServer, catchy } = mockIO(cfg.url, done)
+describe('A connecting sensor', () => {
+  describe('When identification is unsuccessful', () => {
+    it('Should run the callback function with an error message', (done) => {
+      const { mockSocket, mockServer, catchy } = mockIO(cfg.url, done)
 
-    const cb = jest.fn()
-    const assert = () => catchy(() => {
-      expect(cb).toBeCalledWith(expect.objectContaining({
-        error: deviceStatus.IDENTITY_ERROR,
-      }))
-    })
+      const cb = jest.fn()
+      const assert = () => catchy(() => {
+        expect(cb).toBeCalledWith(expect.objectContaining({
+          error: deviceStatus.IDENTITY_ERROR,
+        }))
+      })
 
-    setListeners(mockSocket)
+      setListeners(mockSocket)
 
-    mockSocket.on('connect', () => {
-      mockServer.emit('identify', {
-        type: 'error',
-        status: deviceStatus.IDENTITY_ERROR
-      }, cb)
-      setTimeout(assert, 50)
-    })
-  })
-})
-
-describe('When succesfully identified', () => {
-  it('Should run the callback function without an error message and a device object reflecting status', (done) => {
-    const { mockSocket, mockServer, catchy } = mockIO(cfg.url, done)
-
-    const cb = jest.fn()
-    const assert = () => catchy(() => {
-      expect(cb).toBeCalledWith(expect.objectContaining({
-        error: '',
-        client: expect.objectContaining({ status: deviceStatus.SENSOR_PENDING }),
-      }))
-    })
-
-    setListeners(mockSocket)
-
-    mockSocket.on('connect', () => {
-      mockServer.emit('identify', {
-        type: 'sensor',
-        status: deviceStatus.SENSOR_PENDING
-      }, cb)
-      setTimeout(assert, 50)
+      mockSocket.on('connect', () => {
+        mockServer.emit('identify', {
+          type: 'sensor',
+          status: deviceStatus.IDENTITY_ERROR,
+        }, cb)
+        setTimeout(assert, 50)
+      })
     })
   })
 
-  describe('A connected sensor', () => {
+  describe('When succesfully identified', () => {
+    it('Should run the callback function without an error message and a device object reflecting status', (done) => {
+      const { mockSocket, mockServer, catchy } = mockIO(cfg.url, done)
+
+      const cb = jest.fn()
+      const assert = () => catchy(() => {
+        expect(cb).toBeCalledWith(expect.objectContaining({
+          error: '',
+          client: expect.objectContaining({ status: deviceStatus.SENSOR_PENDING }),
+        }))
+      })
+
+      setListeners(mockSocket)
+
+      mockSocket.on('connect', () => {
+        mockServer.emit('identify', {
+          type: 'sensor',
+          status: deviceStatus.SENSOR_PENDING,
+        }, cb)
+        setTimeout(assert, 50)
+      })
+    })
+
     it('Should be listened to for expected events', (done) => {
       const { mockSocket, mockServer, catchy } = mockIO(cfg.url, done)
 
@@ -114,7 +114,7 @@ describe('When succesfully identified', () => {
         expect(emitSpy).toHaveBeenCalledWith(
           'sensorlist',
           expect.any(Array),
-          expect.anything() // Used by mock-socket internally
+          expect.anything() // For stuff used by mock-socket internally
         )
       })
 
@@ -123,14 +123,39 @@ describe('When succesfully identified', () => {
       mockSocket.on('connect', () => {
         mockServer.emit('identify', {
           type: 'sensor',
-          status: deviceStatus.SENSOR_OK
+          status: deviceStatus.SENSOR_OK,
         })
         setTimeout(assert, 50)
       })
     })
   })
+})
 
-  describe('A connected monitor', () => {
+describe('A connecting monitor', () => {
+  describe('When identification is unsuccessful', () => {
+    it('Should run the callback function with an error message', (done) => {
+      const { mockSocket, mockServer, catchy } = mockIO(cfg.url, done)
+
+      const cb = jest.fn()
+      const assert = () => catchy(() => {
+        expect(cb).toBeCalledWith(expect.objectContaining({
+          error: deviceStatus.MONITOR_LOGIN_ERROR,
+        }))
+      })
+
+      setListeners(mockSocket)
+
+      mockSocket.on('connect', () => {
+        mockServer.emit('identify', {
+          type: 'monitor',
+          status: deviceStatus.MONITOR_LOGIN_ERROR,
+        }, cb)
+        setTimeout(assert, 50)
+      })
+    })
+  })
+
+  describe('When successfully identified', () => {
     it('Should be listened to for expected events', (done) => {
       const { mockSocket, mockServer, catchy } = mockIO(cfg.url, done)
 
@@ -145,14 +170,37 @@ describe('When succesfully identified', () => {
       mockSocket.on('connect', () => {
         mockServer.emit('identify', {
           type: 'monitor',
-          status: deviceStatus.MONITOR_OK
+          status: deviceStatus.MONITOR_OK,
         })
+        setTimeout(assert, 50)
+      })
+    })
+
+    it('Should run the callback function without an error message', (done) => {
+      const { mockSocket, mockServer, catchy } = mockIO(cfg.url, done)
+
+      const cb = jest.fn()
+      const assert = () => catchy(() => {
+        expect(cb).toBeCalledWith(expect.objectContaining({
+          error: '',
+          client: expect.objectContaining({ status: deviceStatus.MONITOR_OK }),
+        }))
+      })
+
+      setListeners(mockSocket)
+
+      mockSocket.on('connect', () => {
+        mockServer.emit('identify', {
+          type: 'monitor',
+          status: deviceStatus.MONITOR_OK,
+        }, cb)
         setTimeout(assert, 50)
       })
     })
   })
 })
 
+// TODO: DISCONNECT tests...
 // TODO: I think there's a bug in mock-socket > SocketIO.prototype.close
 // TODO: the first dispatched event gets stuck somewhere. But even when commenting out the first,
 // TODO: 'disconnect' event doesn't fire on mockSocket, so this case is not testable.

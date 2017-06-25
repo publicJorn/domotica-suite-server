@@ -10,6 +10,10 @@ const deviceStatus = require('./deviceStatus')
 function checkSensor (identity) {
   logger.debug('Sensor identity check', identity)
 
+  if (!identity.sensorId) {
+    return Object.assign(identity, deviceStatus.IDENTITY_ERROR)
+  }
+
   let sensorData = db.findSensor(identity)
 
   if (!sensorData) {

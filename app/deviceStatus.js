@@ -1,5 +1,5 @@
 module.exports = {
-  IDENTITY_ERROR:      'incorrect identity information',
+  IDENTITY_ERROR:      'incorrect identity information - provide {sensorId, type: `sensor`}',
   ERROR:               'some generic error',
   SENSOR_PENDING:      'pending identity',
   SENSOR_OK:           'default status ok',

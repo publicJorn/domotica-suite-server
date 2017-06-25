@@ -3,7 +3,7 @@
 exports[`Device statuses should be as expected 1`] = `
 Object {
   "ERROR": "some generic error",
-  "IDENTITY_ERROR": "incorrect identity information",
+  "IDENTITY_ERROR": "incorrect identity information - provide {sensorId, type: \`sensor\`}",
   "MONITOR_LOGIN_ERROR": "monitor credentials incorrect",
   "MONITOR_OK": "monitor identity ok",
   "SENSOR_ALERT": "sensor triggered",

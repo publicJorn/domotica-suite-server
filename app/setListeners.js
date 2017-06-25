@@ -12,8 +12,11 @@ module.exports = (socket) => {
   socket.on('identify', async (identity, cbIdentify) => {
     const client = await checkIdentity(socket, identity)
 
-    if (client.status === deviceStatus.IDENTITY_ERROR) {
-      if (cbIdentify) cbIdentify({ error: deviceStatus.IDENTITY_ERROR, client })
+    if (
+      client.status === deviceStatus.IDENTITY_ERROR ||
+      client.status === deviceStatus.MONITOR_LOGIN_ERROR
+    ) {
+      if (cbIdentify) cbIdentify({ error: client.status, client })
       socket.disconnect()
       return 'Error'
     }
