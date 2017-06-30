@@ -29,16 +29,14 @@ module.exports = (url, done1) => {
     if (typeof done === 'undefined') {
       mockServer.stop()
       console.error('Function catchy does not have access to a `done` callback')
-      return undefined
+      return
     }
 
     try {
       assertion()
       mockServer.stop(done)
-      return true
     } catch (e) {
       mockServer.stop(done.fail.bind(null, e))
-      return false
     }
   }
 

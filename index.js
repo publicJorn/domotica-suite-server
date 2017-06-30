@@ -13,4 +13,4 @@ const io = new SocketServer(cfg.port)
 io.on('connect', setListeners)
 
 // eslint-disable-next-line no-console
-console.info('\n🌐  Sockets open and ready for use ::')
+console.info(`\n🌐  Sockets open and ready for use :: localhost:${cfg.port}`)

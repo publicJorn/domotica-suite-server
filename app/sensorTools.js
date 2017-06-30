@@ -11,7 +11,7 @@ function checkSensor (identity) {
   logger.debug('Sensor identity check', identity)
 
   if (!identity.sensorId) {
-    return Object.assign(identity, deviceStatus.IDENTITY_ERROR)
+    return Object.assign(identity, { status: deviceStatus.IDENTITY_ERROR })
   }
 
   let sensorData = db.findSensor(identity)
@@ -21,6 +21,15 @@ function checkSensor (identity) {
   }
 
   return sensorData
+}
+
+/**
+ * Set default database values for new sensors
+ * @param identity
+ */
+function setDefaults (identity) {
+  const { sensorId, name = '', status = deviceStatus.SENSOR_PENDING } = identity
+  return { sensorId, name, status }
 }
 
 /**
@@ -35,5 +44,6 @@ function handleDisconnect (device) {
 
 module.exports = {
   checkSensor,
-  handleDisconnect
+  setDefaults,
+  handleDisconnect,
 }

@@ -9,7 +9,8 @@
     socket.on('connect', () => {
 		  console.log('connected')
 
-      socket.emit('identify', { type: 'monitor' }, function (data) {
+      const credentials = { name: 'ok', pass: 'ok' }
+      socket.emit('identify', { type: 'monitor', credentials }, function (data) {
         console.info(data)
       })
     })

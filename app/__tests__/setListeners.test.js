@@ -6,7 +6,7 @@ const setListeners = require('../setListeners')
 
 jest.mock('app/utils/loggerFactory')
 jest.mock('app/db')
-jest.mock('app/checkIdentity', () => jest.fn((socket, identity) => identity))
+jest.mock('app/checkIdentity', () => jest.fn((identity) => identity))
 
 describe('When a new connection is made', () => {
   it('Should add a log entry', (done) => {
