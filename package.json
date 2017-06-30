@@ -12,24 +12,25 @@
   "license": "ISC",
   "scripts": {
     "check": "check-node-version --package",
-    "dev": "yarn check && nodemon index.js",
-    "start": "yarn check && cross-env NODE_ENV=production NODE_PATH=. node index.js",
-    "test": "yarn check && jest --config ./jest.json",
-    "lint": "cross-env NODE_PATH=. eslint ."
+    "dev": "npm run check && nodemon index.js",
+    "start": "npm run check && cross-env NODE_ENV=production node index.js",
+    "test": "npm run check && jest --config ./jest.json",
+    "lint": "eslint ."
   },
   "dependencies": {
-    "babel-eslint": "^7.2.3",
     "cross-env": "^4.0.0",
-    "eslint-plugin-import": "^2.6.1",
     "express": "^4.15.2",
     "lodash": "^4.17.0",
+    "nedb": "^1.8.0",
     "socket.io": "^1.7.3",
     "winston": "^2.3.1"
   },
   "devDependencies": {
+    "babel-eslint": "^7.2.3",
     "check-node-version": "^2.1.0",
     "eslint": "^3.19.0",
     "eslint-config-airbnb-base": "^11.2.0",
+    "eslint-plugin-import": "^2.6.1",
     "jest": "^20.0.4",
     "mock-socket": "publicJorn/mock-socket",
     "nodemon": "^1.11.0"
