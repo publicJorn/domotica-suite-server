@@ -1,7 +1,6 @@
 const fs = require('fs')
 
 module.exports = (req, res) => {
-  console.log('static request!')
   fs.readFile(`${__dirname}/index.html`, (err, data) => {
     if (err) {
       res.writeHead(500)
@@ -10,6 +9,6 @@ module.exports = (req, res) => {
 
     res.setHeader('Content-Type', 'text/html')
     res.writeHead(200)
-    res.end(data)
+    return res.end(data)
   })
 }

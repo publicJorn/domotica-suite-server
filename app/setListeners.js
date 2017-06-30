@@ -46,8 +46,12 @@ module.exports = (socket) => {
         socket.on('affirm', (...args) => console.log('affirm', args))
         socket.join('monitors')
         break
+
+      default:
+        return 'Error'
     }
 
     if (cbIdentify) cbIdentify({ error: '', client })
+    return 'Ok'
   })
 }

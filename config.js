@@ -5,6 +5,6 @@ const url = `${protocol}://${domain}:${port}`
 
 module.exports = {
   domain,
-	port,
-	url
+  port,
+  url,
 }

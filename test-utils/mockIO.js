@@ -35,8 +35,10 @@ module.exports = (url, done1) => {
     try {
       assertion()
       mockServer.stop(done)
+      return true
     } catch (e) {
       mockServer.stop(done.fail.bind(null, e))
+      return false
     }
   }
 

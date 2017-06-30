@@ -11,6 +11,7 @@
   "modulePaths": [
     "<rootDir>/"
   ],
+
   "coverageReporters": [
     "html",
     "text",

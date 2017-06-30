@@ -1,17 +1,12 @@
 const cfg = require('config')
 const mockIO = require('test-utils/mockIO')
 const logger = require('app/utils/loggerFactory')()
-const db = require('app/db')
 const deviceStatus = require('app/deviceStatus')
-const setListeners = require('app/setListeners')
+const setListeners = require('../setListeners')
 
-jest.mock('../utils/loggerFactory')
+jest.mock('app/utils/loggerFactory')
 jest.mock('app/db')
-jest.mock('app/checkIdentity', () => {
-  return jest.fn((socket, identity) => identity)
-})
-
-const dbSetStatusSpy = jest.spyOn(db, 'setSensorStatus')
+jest.mock('app/checkIdentity', () => jest.fn((socket, identity) => identity))
 
 describe('When a new connection is made', () => {
   it('Should add a log entry', (done) => {
@@ -98,7 +93,7 @@ describe('A connecting sensor', () => {
       mockSocket.on('connect', () => {
         mockServer.emit('identify', {
           type: 'sensor',
-          status: deviceStatus.SENSOR_OK
+          status: deviceStatus.SENSOR_OK,
         })
         setTimeout(assert, 50)
       })
@@ -160,9 +155,8 @@ describe('A connecting monitor', () => {
       const { mockSocket, mockServer, catchy } = mockIO(cfg.url, done)
 
       const assert = () => catchy(() => {
-        expect(Object.keys(mockSocket.listeners)).toEqual(
-          expect.arrayContaining(['saveSensorData', 'affirm'])
-        )
+        expect(Object.keys(mockSocket.listeners))
+          .toEqual(expect.arrayContaining(['saveSensorData', 'affirm']))
       })
 
       setListeners(mockSocket)

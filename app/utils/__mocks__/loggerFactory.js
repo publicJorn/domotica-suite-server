@@ -4,12 +4,10 @@ const mockInfo = jest.fn()
 const mockWarn = jest.fn()
 const mockError = jest.fn()
 
-module.exports = () => {
-  return {
-    log: mockLog,
-    debug: mockDebug,
-    info: mockInfo,
-    warn: mockWarn,
-    error: mockError,
-  }
-}
+module.exports = () => ({
+  log: mockLog,
+  debug: mockDebug,
+  info: mockInfo,
+  warn: mockWarn,
+  error: mockError,
+})

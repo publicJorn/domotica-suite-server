@@ -1,4 +1,4 @@
-const _remove = require('lodash/remove')
+const remove = require('lodash/remove')
 
 module.exports = class {
   constructor () {
@@ -6,10 +6,10 @@ module.exports = class {
   }
 
   add (socket, device) {
-    this.clients.push({ id: socket.id, device, socket})
+    this.clients.push({ id: socket.id, device, socket })
   }
 
   remove (socketId) {
-    _remove(this.clients, (client) => client.id === socketId)
+    remove(this.clients, (client) => client.id === socketId)
   }
 }

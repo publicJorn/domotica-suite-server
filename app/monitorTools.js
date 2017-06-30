@@ -22,11 +22,10 @@ function checkMonitor (identity) {
 
   if (monitorData && monitorData.pass === pass) {
     return Object.assign(identity, { status: deviceStatus.MONITOR_OK })
-  } else {
-    return Object.assign(identity, { status: deviceStatus.MONITOR_LOGIN_ERROR })
   }
+  return Object.assign(identity, { status: deviceStatus.MONITOR_LOGIN_ERROR })
 }
 
 module.exports = {
-  checkMonitor
+  checkMonitor,
 }
