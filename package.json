@@ -14,7 +14,8 @@
     "check": "check-node-version --package",
     "dev": "npm run check && nodemon index.js",
     "start": "npm run check && cross-env NODE_ENV=production node index.js",
-    "test": "npm run check && jest --config ./jest.json",
+    "test": "npm run check && npm run lint && jest --config ./jest.json --coverage",
+    "test:watch": "npm run check && jest --config ./jest.json --watch",
     "lint": "eslint ."
   },
   "dependencies": {

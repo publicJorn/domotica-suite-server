@@ -3,11 +3,11 @@ const Datastore = require('nedb')
 const logger = require('./utils/loggerFactory')()
 const sensorTools = require('./sensorTools')
 
+const file = (process.env.NODE_ENV === 'production') ? 'devices.db' : 'dev-devices.db'
 const db = new Datastore({
-  filename: path.resolve(__dirname, '../db/dev-devices.db'),
+  filename: path.resolve(__dirname, `../db/${file}`),
   autoload: true,
 })
-
 
 const addSensor = (identity) => new Promise((resolve, reject) => {
   const parsedData = sensorTools.setDefaults(identity)
@@ -18,15 +18,18 @@ const addSensor = (identity) => new Promise((resolve, reject) => {
   }
 
   db.insert(parsedData, (err, sensor) => {
-    logger.debug(`Sensor ${parsedData.arduinoId} inserted in DB`)
     if (err) {
+      logger.debug(`There was an error: ${err}`)
       reject(err)
     } else {
+      logger.debug(`Sensor with id '${parsedData.sensorId}' inserted in DB`)
       resolve(sensor)
     }
   })
 })
 
-module.export = {
+// Expose the datastore when testing
+const nedbMockInstance = (process.env.NODE_ENV === 'test') ? { nedbMockInstance: db } : {}
+module.exports = Object.assign({}, nedbMockInstance, {
   addSensor,
-}
+})

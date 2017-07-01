@@ -29,6 +29,11 @@ function checkSensor (identity) {
  */
 function setDefaults (identity) {
   const { sensorId, name = '', status = deviceStatus.SENSOR_PENDING } = identity
+
+  if (!sensorId) {
+    return undefined
+  }
+
   return { sensorId, name, status }
 }
 
