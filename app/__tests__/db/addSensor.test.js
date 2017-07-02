@@ -5,6 +5,7 @@ jest.mock('app/utils/loggerFactory')
 jest.mock('nedb')
 
 const logDebugSpy = jest.spyOn(logger, 'debug')
+const logErrorSpy = jest.spyOn(logger, 'error')
 const insertSpy = jest.spyOn(db.nedbMockInstance, 'insert')
 
 /**
@@ -25,27 +26,32 @@ describe('Database API : addSensor', () => {
 
     it('Should insert into database', async () => {
       expect.assertions(1)
-      await addPromise
-      expect(insertSpy).toHaveBeenCalled()
+      await expect(insertSpy).toHaveBeenCalled()
     })
 
     it('Should resolve', async () => {
       expect.assertions(1)
-      await addPromise
-      expect(addPromise).resolves.toBeDefined()
+      await expect(addPromise).resolves.toBeDefined()
     })
 
     it('Should log a debug message', async () => {
       expect.assertions(1)
-      await addPromise
-      expect(logDebugSpy).toBeCalledWith(expect.any(String))
+      await expect(logDebugSpy).toBeCalledWith(expect.any(String))
     })
   })
 
   describe('an error in the insert operation', () => {
-    it('Should reject', () => {
-      const properIdentity = { type: 'sensor', sensorId: 'throw error' }
-      return expect(db.addSensor(properIdentity)).rejects.toBeDefined()
+    const properIdentity = { type: 'sensor', sensorId: 'throw error' }
+    const addPromise = db.addSensor(properIdentity)
+
+    it('Should reject', async () => {
+      expect.assertions(1)
+      await expect(addPromise).rejects.toBeDefined()
+    })
+
+    it('Should log an error message', async () => {
+      expect.assertions(1)
+      await expect(logErrorSpy).toBeCalledWith(expect.any(String))
     })
   })
 })

@@ -19,7 +19,7 @@ const addSensor = (identity) => new Promise((resolve, reject) => {
 
   db.insert(parsedData, (err, sensor) => {
     if (err) {
-      logger.debug(`There was an error: ${err}`)
+      logger.error(`There was an error: ${err}`)
       reject(err)
     } else {
       logger.debug(`Sensor with id '${parsedData.sensorId}' inserted in DB`)
