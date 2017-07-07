@@ -1,22 +1,65 @@
 <html>
-	<script src="../../node_modules/socket.io-client/dist/socket.io.js"></script>
-	<script>
-		const url = 'http://localhost:3003'
-		const socket = io.connect(url, { forceNew: true })
+  <head>
+    <title>Test page</title>
+  </head>
+  <body>
+    <p>Open console and play with buttons</p>
 
-		socket.on('disconnect', () => console.log('disconnected'))
+    <section id="sensor">
+      <h3>Sensor</h3>
+      <button>Connect</button> <button>Disconnect</button>
+    </section>
 
-    socket.on('connect', () => {
-		  console.log('connected')
+    <section id="monitor">
+      <h3>Monitor</h3>
+      <button>Connect</button> <button>Disconnect</button>
+    </section>
 
-      const credentials = { name: 'ok', pass: 'ok' }
-      socket.emit('identify', { type: 'monitor', credentials }, function (data) {
-        console.info(data)
-      })
-    })
+    <script src="../../node_modules/socket.io-client/dist/socket.io.js"></script>
+    <script>
+      const url = 'http://localhost:3003'
+      const sensorButtons = document.querySelectorAll('#sensor button')
+      const monitorButtons = document.querySelectorAll('#monitor button')
 
-//		setTimeout(() => {
-//			socket.disconnect()
-//		}, 2000)
-	</script>
+      let socket
+
+      sensorButtons[0].addEventListener('click', () => createConnection('sensor'))
+      monitorButtons[0].addEventListener('click', () => createConnection('monitor'))
+      sensorButtons[1].addEventListener('click', disconnect)
+      monitorButtons[1].addEventListener('click', disconnect)
+
+      function createConnection (type) {
+        socket = io.connect(url, { forceNew: true })
+
+        socket.on('disconnect', () => console.log('disconnected'))
+
+        socket.on('connect', () => {
+          console.log('connected')
+
+          if (type === 'sensor') {
+            onConnectSensor()
+          } else {
+            onConnectMonitor()
+          }
+        })
+      }
+
+      function onConnectSensor () {
+        socket.emit('identify', { type: 'sensor', sensorId: 'a1' }, function (data) {
+          console.info(data)
+        })
+      }
+
+      function onConnectMonitor () {
+        const credentials = { name: 'ok', pass: 'ok' }
+        socket.emit('identify', { type: 'monitor', credentials }, function (data) {
+          console.info(data)
+        })
+      }
+
+      function disconnect () {
+        socket.disconnect()
+      }
+    </script>
+  </body>
 </html>
