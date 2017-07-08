@@ -9,6 +9,28 @@ const db = new Datastore({
   autoload: true,
 })
 
+const findSensor = (identity) => new Promise((resolve, reject) => {
+  const { type, sensorId } = identity
+
+  if (type !== 'sensor' || !sensorId) {
+    reject('Required data not found on identity')
+  }
+
+  db.find({ type, sensorId }, (err, sensor) => {
+    if (err) {
+      logger.error(`Error finding sensor: ${err}`)
+      reject(err)
+    } else {
+      if (sensor.length) {
+        logger.debug(`Sensor ${sensorId} found`)
+      } else {
+        logger.warn(`Sensor ${sensorId} not found`)
+      }
+      resolve(sensor)
+    }
+  })
+})
+
 const addSensor = (identity) => new Promise((resolve, reject) => {
   const parsedData = sensorTools.setDefaults(identity)
 
@@ -19,7 +41,7 @@ const addSensor = (identity) => new Promise((resolve, reject) => {
 
   db.insert(parsedData, (err, sensor) => {
     if (err) {
-      logger.error(`There was an error: ${err}`)
+      logger.error(`Error adding sensor: ${err}`)
       reject(err)
     } else {
       logger.debug(`Sensor with id '${parsedData.sensorId}' inserted in DB`)
@@ -28,8 +50,7 @@ const addSensor = (identity) => new Promise((resolve, reject) => {
   })
 })
 
-// Expose the datastore when testing
-const nedbMockInstance = (process.env.NODE_ENV === 'test') ? { nedbMockInstance: db } : {}
-module.exports = Object.assign({}, nedbMockInstance, {
+module.exports = {
+  findSensor,
   addSensor,
-})
+}

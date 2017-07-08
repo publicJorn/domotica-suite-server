@@ -19,5 +19,4 @@ module.exports = {
   findMonitorByName: (name) => (
     (name === 'ok') ? { name: 'ok', pass: 'ok' } : null
   ),
-
 }
