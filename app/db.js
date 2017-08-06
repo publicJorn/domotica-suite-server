@@ -1,7 +1,7 @@
 const path = require('path')
 const Datastore = require('nedb')
 const logger = require('./utils/loggerFactory')()
-const sensorTools = require('./sensorTools')
+const deviceStatus = require('./deviceStatus')
 
 const file = (process.env.NODE_ENV === 'production') ? 'devices.db' : 'dev-devices.db'
 const db = new Datastore({
@@ -16,35 +16,32 @@ const findSensor = (identity) => new Promise((resolve, reject) => {
     reject('Required data not found on identity')
   }
 
-  db.find({ type, sensorId }, (err, sensor) => {
+  db.findOne({ sensorId }, (err, sensor) => {
     if (err) {
       logger.error(`Error finding sensor: ${err}`)
       reject(err)
     } else {
-      if (sensor.length) {
-        logger.debug(`Sensor ${sensorId} found`)
-      } else {
-        logger.warn(`Sensor ${sensorId} not found`)
-      }
+      const found = (sensor === null) ? 'not found' : 'found'
+      logger.debug(`Sensor ${sensorId} ${found}`)
       resolve(sensor)
     }
   })
 })
 
 const addSensor = (identity) => new Promise((resolve, reject) => {
-  const parsedData = sensorTools.setDefaults(identity)
+  const { sensorId, name = '', status = deviceStatus.SENSOR_PENDING } = identity
 
-  if (!parsedData) {
-    reject('Required params not set')
+  if (!sensorId) {
+    reject('DB:addSensor :: Not a sensor')
     return
   }
 
-  db.insert(parsedData, (err, sensor) => {
+  db.insert({ sensorId, name, status }, (err, sensor) => {
     if (err) {
       logger.error(`Error adding sensor: ${err}`)
       reject(err)
     } else {
-      logger.debug(`Sensor with id '${parsedData.sensorId}' inserted in DB`)
+      logger.debug(`Sensor ${sensorId} inserted in DB. `)
       resolve(sensor)
     }
   })

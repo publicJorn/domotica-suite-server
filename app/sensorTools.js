@@ -7,34 +7,22 @@ const deviceStatus = require('./deviceStatus')
  * @param identity
  * @returns {*}
  */
-function checkSensor (identity) {
+async function checkSensor (identity) {
   logger.debug('Sensor identity check', identity)
 
   if (!identity.sensorId) {
     return Object.assign(identity, { status: deviceStatus.IDENTITY_ERROR })
   }
 
-  let sensorData = db.findSensor(identity)
+  let sensorData = await db.findSensor(identity)
+  logger.debug('checkSensor found?', sensorData)
 
   if (!sensorData) {
-    sensorData = db.addSensor(identity)
+    sensorData = await db.addSensor(identity)
+    logger.debug('checkSensor added', sensorData)
   }
 
   return sensorData
-}
-
-/**
- * Set default database values for new sensors
- * @param identity
- */
-function setDefaults (identity) {
-  const { sensorId, name = '', status = deviceStatus.SENSOR_PENDING } = identity
-
-  if (!sensorId) {
-    return undefined
-  }
-
-  return { sensorId, name, status }
 }
 
 /**
@@ -49,6 +37,5 @@ function handleDisconnect (device) {
 
 module.exports = {
   checkSensor,
-  setDefaults,
   handleDisconnect,
 }

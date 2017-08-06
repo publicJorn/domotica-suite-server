@@ -22,6 +22,7 @@ module.exports = (socket) => {
     ) {
       /* istanbul ignore else */
       if (cbIdentify) cbIdentify({ error: client.status, client })
+      logger.debug(`Invalid credentials, disonnecting: ${socket.id}`)
       socket.disconnect()
       return 'Error'
     }

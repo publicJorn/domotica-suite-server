@@ -3,6 +3,8 @@ const deviceStatus = require('./deviceStatus')
 const sensorTools = require('./sensorTools')
 const monitorTools = require('./monitorTools')
 
+console.log('checkIdentity -> sensorTools:', sensorTools)
+
 module.exports = (identity) => {
   switch (identity.type) {
     case 'sensor':

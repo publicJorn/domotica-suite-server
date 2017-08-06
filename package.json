@@ -1,5 +1,5 @@
 {
-  "name": "domotica-server",
+  "name": "domoticasuite-server",
   "version": "0.1.0",
   "description": "Receives and stores sensor data and provides an api for monitoring this data.",
   "keywords": [
@@ -12,7 +12,7 @@
   "license": "ISC",
   "scripts": {
     "check": "check-node-version --package",
-    "dev": "npm run check && nodemon index.js",
+    "dev": "npm run check && nodemon --inspect index.js",
     "start": "npm run check && cross-env NODE_ENV=production node index.js",
     "test": "npm run check && npm run lint && jest --config ./jest.json --coverage",
     "test:watch": "npm run check && jest --config ./jest.json --watch",
